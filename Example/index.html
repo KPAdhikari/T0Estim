@@ -1,0 +1,60 @@
+<html>
+<head>
+<title>Sample PDF Document</title>
+</head>
+<body>
+<a href=../index.html>Creating a PDF Document using PDFLaTeX</a> | 
+<a href=http://theoval.cmp.uea.ac.uk/~nlct>Dr Nicola Talbot</a> |
+<a href=http://www.cmp.uea.ac.uk>School of Computing Sciences</a> |
+<a href=http://www.uea.ac.uk>University of East Anglia</a>
+<p>
+<h1>Sample PDF Document</h1>
+
+You can download the source code for a PDF document here.  You can either
+download the files individually:
+<dir>
+<li><a href=pdfdoc.tex>pdfdoc.tex</a>
+<li><a href=pdfdoc.sty>pdfdoc.sty</a>
+<li><a href=pdfdoc.bib>pdfdoc.bib</a>
+<li><a href=docinfo.png>docinfo.png</a>
+<li><a href=docinfo.eps>docinfo.eps</a>
+<li><a href=Makefile>Makefile</a>
+</dir>
+or you can download all files in a tar gzip file: <a href=pdfdoc.tar.gz>pdfdoc.tar.gz</a>
+
+<h2>Notes</h2>
+
+This document is designed to create either an A4 document intended for
+printing or a 6inx4in document intended for on-line viewing.
+A boolean variable, <tt>online</tt>, was defined to determine which version
+to produce, and to save editing the file each time a different version
+is required, a file called <tt>switch.tex</tt> is read in, if it exists.
+The Makefile contains the line:
+<pre>
+echo "\onlinetrue" > switch.tex
+</pre>
+when the 6inx4in version is being created, and the line:
+<pre>
+echo "\onlinefalse" > switch.tex
+</pre>
+when the A4 version is being created.  So, to create the 6inx4in version,
+all that is needed is to do:
+<pre>
+make pdfdoc-screen.pdf
+</pre>
+and to create the A4 version, all that is needed is to do:
+<pre>
+make pdfdoc-a4.pdf
+</pre>
+<p>
+This sample document is an old version of the document 
+<a href=../index.html>Creating a PDF Document using PDFLaTeX</a>.  The most 
+recent version is rather more complicated, as I wanted it to work under both 
+PDFLaTeX and LaTeX2HTML.
+
+<p>
+<hr>
+<h5>N.L.C. Talbot. School of Computing Sciences, University of East Anglia.
+Last Modified: 17 July, 2004</h5>
+</body>
+</html>

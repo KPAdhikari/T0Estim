@@ -1,0 +1,120 @@
+% sample file
+% http://theoval.cmp.uea.ac.uk/~nlct/latex/pdfdoc/
+
+\NeedsTeXFormat{LaTeX2e}
+
+\ProvidesPackage{pdfdoc}
+
+% create a new page style that has a navigation bar in the footer
+
+% \ifthenelse is used to determine if the Previous or Next needs
+% to be greyed.
+
+% The first page is determined by defining a new boolean called
+% firstpage, which is initially set to true, but is changed
+% to false after the title page (by modifying the titlepage
+% environment, see below.)
+%
+% The page number is also surpressed on the first page.
+
+% The last page is determined by defining a new boolean called
+% lastpage, and setting in to true at the end of the index.
+% (This is assuming that the index occurs at the very end
+% of the document, which is the norm.)
+
+\newboolean{lastpage}
+\setboolean{lastpage}{false}
+
+\newcommand\ps@online{
+\renewcommand{\@oddhead}{}
+\renewcommand{\@evenhead}{}
+\renewcommand{\@oddfoot}{\hfill
+   \ifthenelse{\boolean{firstpage}}
+              {\textcolor[gray]{0.8}{Previous}}
+              {\Acrobatmenu{PrevPage}{Previous}}
+   \ifthenelse{\boolean{lastpage}}
+              {\textcolor[gray]{0.8}{Next}}
+              {\Acrobatmenu{NextPage}{Next}}
+   \Acrobatmenu{FirstPage}{First}
+   \Acrobatmenu{LastPage}{Last}
+   \Acrobatmenu{GoBack}{Back}
+   \Acrobatmenu{GoForward}{Forward}
+   \hyperref[sec:index]{Index}\hfill
+   \ifthenelse{\boolean{firstpage}}{}{\thepage}}
+\renewcommand{\@evenfoot}{\@oddfoot}}
+
+\renewenvironment{theindex}
+               {\if@twocolumn
+                  \@restonecolfalse
+                \else
+                  \@restonecoltrue
+                \fi
+                \columnseprule \z@
+                \columnsep 35\p@
+                \twocolumn[\section*{\indexname}]%
+                \@mkboth{\MakeUppercase\indexname}%
+                        {\MakeUppercase\indexname}%
+                \label{sec:index}\addcontentsline{toc}{section}{\indexname}\parindent\z@
+                \parskip\z@ \@plus .3\p@\relax
+                \let\item\@idxitem}
+               {\setboolean{lastpage}{true}\relax
+                \if@restonecol\onecolumn\else\clearpage\fi}
+
+% online version has the title on a page by itself.
+
+\ifonline
+  \newboolean{firstpage}
+  \setboolean{firstpage}{true}
+
+% titlepage environment needs to be redefined
+% so that it doesn't set the pagestyle to empty
+
+\renewenvironment{titlepage}
+    {%
+      \if@twocolumn
+        \@restonecoltrue\onecolumn
+      \else
+        \@restonecolfalse\newpage
+      \fi
+    }%
+    {\if@restonecol\twocolumn \else \newpage \fi
+     \global\firstpagefalse
+    }
+
+% Make sure that maketitle uses titlepage environment
+
+   \renewcommand\maketitle{\begin{titlepage}%
+  \let\footnotesize\small
+  \let\footnoterule\relax
+  \let \footnote \thanks
+  \null\vfil
+  \vskip 60\p@
+  \begin{center}%
+    {\LARGE \@title \par}%
+    \vskip 3em%
+    {\large
+     \lineskip .75em%
+      \begin{tabular}[t]{c}%
+        \@author
+      \end{tabular}\par}%
+      \vskip 1.5em%
+    {\large \@date \par}%       % Set date in \large size.
+  \end{center}\par
+  \@thanks
+  \vfil\null
+  \end{titlepage}%
+  \setcounter{footnote}{0}%
+  \global\let\thanks\relax
+  \global\let\maketitle\relax
+  \global\let\@thanks\@empty
+  \global\let\@author\@empty
+  \global\let\@date\@empty
+  \global\let\@title\@empty
+  \global\let\title\relax
+  \global\let\author\relax
+  \global\let\date\relax
+  \global\let\and\relax
+  }
+\fi
+
+\endinput
