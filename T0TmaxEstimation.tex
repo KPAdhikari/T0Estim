@@ -24,6 +24,7 @@
 \usepackage{url} 
 \usepackage{pst-plot}
 \usepackage[font=small,format=plain,labelfont=bf,up, justification=justified]{caption}
+\usepackage[section]{placeins} %For \FloatBarrier <= https://en.wikibooks.org/wiki/LaTeX/Floats,_Figures_and_Captions#Tables
 \renewcommand{\textfraction}{0.05}
 \renewcommand{\topfraction}{0.95}
 \renewcommand{\bottomfraction}{0.95}
@@ -54,8 +55,17 @@ In this document the process of estimating the \textcolor{red}{Signal Cable Time
 is described and the results are presented. %\LaTeX{}.
 \end{abstract}
 
+%https://texblog.org/2013/04/29/latex-table-of-contents-list-of-figurestables-and-some-customizations/
+\tableofcontents
+%\listoffigures
+%\listoftables
+
+\pagebreak
+
+
 
 \section{Introduction}
+\FloatBarrier
 
 The recorded TDC values (in nanoseconds) which provide the measurement of drift times for the ions produced by a charged particle passing through the drift chamber are actually a sum of the true drift time and several delays. One major component of this delay is the delay due to the time taken by the signals while traveling through the signal cables.
 
@@ -203,67 +213,60 @@ in which case par[0] was negative i.e, -1.09872e+01, the par[0] was also constra
 
 \subsection{Estimating T0 values from the fits}
 
-Once the overall fit is obtained, using the fit parameters $p_2$ and $p_3$, the sigmoid
-function is singled out (extracted). Since the rising edge of the sigmoid fits well with the rising
-edge of the TDC distribution, we can extract from this sigmoid the straight line that
-represents the edge (i.e, the line with the same slope as the sigmoid at the half-way
-point) as follows:
+Once the overall fit is obtained, corresponding T0 can be extracted from its fit parameters. From the fit
+fit parameters, we can extract the straight line that represents the leading edge and if this straight line
+is extrapolated down to the horizontal line that represents the constant noise level (given by the fifth
+fit parameter p4), time value corresponding to the intersection point gives us the T0 for the given
+distribution. The straight line representing the rising edge can be defined as the line that passes through the
+central (half-way) point $P_{1/2}$ of the corresponding sigmoid and having the same slope $m$ as the
+fit function at that particular reference point.
 
-%\begin{comment}
-\begin{eqnarray}
-  \label{sigmEdge}
-  y = slope*x + yIntercept 
-\end{eqnarray}
-%\end{comment}
-where,
-\begin{subequations}
-\label{sig_mc}
-\begin{eqnarray}
-\label{sig_m}
-%%//Slope of sigmoid = Derivative of 1/(1+exp(a+bx)) = -b*exp(a+bx)/(1 + exp(a+bx))^2
-%%//derivSigHalfPoint = -fPars[3]*expAplusBx / pow((1.0+expAplusBx),2); //This is the slope of sigmoid at halfway point.
-%%    derivSigHalfPoint = fa2->Derivative(sigmoidHalfwayPoint);
-%%    funcValAtSigHalf = fa2->Eval(sigmoidHalfwayPoint);
-slope = m = derivative of sigmoid = - p_3 \frac{e^{p_2 + p_3t}}{(1 + e^{p_2 + p_3t})^2} 
-\end{eqnarray}
+The reference point $P_{1/2}$ is the one on the fit function where the x-value (or time here) is such that the corresponding
+sigmoid function i.e. $1.0/(1+e^{p_2 + p_3 x})$ would have the value of $1/2$. This is true when the exponential term in
+the denominator would be exactly one, which means the x-coordinate of that point is given by:
+\begin{equation}
+\label{xSigHalf}
+\begin{aligned}
+   xSigm_{1/2}   = - \frac{p_2}{p_3}
+\end{aligned}
+\end{equation}
 
-\begin{eqnarray}
-\label{sig_c}
-yIntercept  = ..
-\end{eqnarray}
-\end{subequations}
+The slope of the fit function at $x = xSig_{1/2}$, on the other hand, is given by its derivative at that point as
+follows:
+\begin{equation}
+\label{slopeSigHalf}
+\begin{aligned}
+  slope = m  =  e^{p_0 + p_1 x} \Big( \frac{p_1}{1 + e^{p_2 + p_3 x}} -   \frac{p_3 e^{p_2 + p_3 x}}{(1 + e^{p_2 + p_3 x})^2}    \Big)
+\end{aligned}
+\end{equation}
 
-Although, we can evaluate  derivative analytically using above formula, in ROOT, we can do so by calling 
-the Derivative method for the given function that represents the overall fit. Thus, at the half-way point, the 
-derivative or the slope would be given as follows:
+The value of the function at $x = xSig_{1/2}$ point is easily evaluated by calling the 'evaluate()' method of the
+function class that is used for the fitting procedure. Now, using the \textbf{point-slope} form for the equation of
+a straight line, the line representing the leading edge is given by the following equation:
 
-\begin{eqnarray}
-\label{fSlopeAt1By2}
-slope = m = fitFunc->Derivative(sigmoidHalfwayPoint);
-\end{eqnarray}
+\begin{equation}
+\label{eqLeadingEdge}
+\begin{aligned}
+  y - f(xSigm_{1/2}) = slope (x - xSigm_{1/2})
+\end{aligned}
+\end{equation}
 
-Likewise, the value of the fit function at the same sigmoid-halfway-point is given as follows:
+Likewise, the equation for the noise level is as follows:
 
-\begin{eqnarray}
-\label{fValAt1By2}
-funcValAtSigHalf = fitFunc->Eval(sigmoidHalfwayPoint);
-\end{eqnarray}
+\begin{equation}
+\label{eqNoiseLevel}
+\begin{aligned}
+  y = p_4
+\end{aligned}
+\end{equation}
 
-where $sigmoidHalfwayPoint = |par[2]/par[3]|$ (modulus is for the fact that the ratio is 
-$par[2]/par[3]$ negative due to par[3] being constrained to negative values (see 
-table \ref{tabParLimits}).
+Now solving these two equations for x gives the T0 defined by the intersection point as follows:
 
-
-
-With that, now we can make two different estimates of T0 as described below. The first estimate
-is by extrapolating the straight line (which represents the slope) down to the level of the noise background (== par[4]) 
-and finding out the corresponding value along the X- or T-axis.
 \begin{equation}
 \label{T0estm1}
 \begin{aligned}
 %//X value where the st. line meets the noise background (background = fPars[4] (Extrapolation upto noise level)
-   T0   = & sigmoidHalfwayPoint + \\
-          & \frac{1}{derivSigHalfPoint} (par[4] - funcValAtSigHalf); 
+   T0   = \frac{p_4 - f(xSigm_{1/2})}{slope} + xSigm_{1/2}
 \end{aligned}
 \end{equation}
 
