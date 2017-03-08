@@ -32,7 +32,7 @@
 \setcounter{totalnumber}{5}
 
 \usepackage{longtable} % nate
-
+\usepackage{appendix} %http://www.tex.ac.uk/FAQ-appendix.html
 
 
 %kp: 10/24/16: ============ My definitions/shortcuts
@@ -227,11 +227,11 @@ the denominator would be exactly one, which means the x-coordinate of that point
 \begin{equation}
 \label{xSigHalf}
 \begin{aligned}
-   xSigm_{1/2}   = - \frac{p_2}{p_3}
+     x_{1/2} = xSigm_{1/2} = - \frac{p_2}{p_3}
 \end{aligned}
 \end{equation}
 
-The slope of the fit function at $x = xSig_{1/2}$, on the other hand, is given by its derivative at that point as
+The slope of the fit function at $x = x_{1/2}$, on the other hand, is given by its derivative at that point as
 follows:
 \begin{equation}
 \label{slopeSigHalf}
@@ -240,14 +240,14 @@ follows:
 \end{aligned}
 \end{equation}
 
-The value of the function at $x = xSig_{1/2}$ point is easily evaluated by calling the 'evaluate()' method of the
+The value of the function at $x = x_{1/2}$ point is easily evaluated by calling the 'evaluate()' method of the
 function class that is used for the fitting procedure. Now, using the \textbf{point-slope} form for the equation of
 a straight line, the line representing the leading edge is given by the following equation:
 
 \begin{equation}
 \label{eqLeadingEdge}
 \begin{aligned}
-  y - f(xSigm_{1/2}) = slope (x - xSigm_{1/2})
+  y - f(x_{1/2}) = slope (x - x_{1/2})
 \end{aligned}
 \end{equation}
 
@@ -266,16 +266,26 @@ Now solving these two equations for x gives the T0 defined by the intersection p
 \label{T0estm1}
 \begin{aligned}
 %//X value where the st. line meets the noise background (background = fPars[4] (Extrapolation upto noise level)
-   T0   = \frac{p_4 - f(xSigm_{1/2})}{slope} + xSigm_{1/2}
+  T0   & =  \frac{p_4 - f(x_{1/2})}{slope} + x_{1/2} \\
+%       & =  - \frac{1 + e^{p_2 + p_3 x_{1/2}}}{p_1 + (p_1 - p_3) e^{p_2 + p_3 x_{1/2}}} - \frac{p_2}{p_3}
 \end{aligned}
 \end{equation}
 
+By using equations \ref{T0fit}, \ref{xSigHalf}, and \ref{slopeSigHalf} into \ref{T0estm1}, the expression for T0 can be simplified further, giving
+the following expression for T0:
+\begin{equation}
+\label{T0estm2}
+\begin{aligned}
+  T0   & = - \frac{1 + e^{p_2 + p_3 x_{1/2}}}{p_1 + (p_1 - p_3) e^{p_2 + p_3 x_{1/2}}} - \frac{p_2}{p_3}\\
+       & = - \frac{2}{2p_1  - p_3} - \frac{p_2}{p_3}
+\end{aligned}
+\end{equation}
 
 
 The second method is extrapolating the same straight line further down such that the corresponding value of
 time where it meets the time-axis gives us the T0 estimate as follows:
 \begin{equation}
-\label{T0estm2}
+\label{T0estm2n}
 \begin{aligned}
 %//X value where the st. line meets the X or time axis (Extrapolation upto  y=0 level i.e upto X or time axis)
    T0  =    &  sigmoidHalfwayPoint + \\
@@ -334,5 +344,51 @@ table \ref{tabParLimits}).
 \section{Conclusion}
 
 
+
+% Activate the appendix
+% from now on sections are numerated with capital letters
+\appendix
+\appendixpage
+%\addappheadtotoc
+% The \appendixpage command adds a separate title “Appendices” above the first appendix, and \addappheadtotoc adds a similar title to the table of contents. These simple modifications cover many people’s needs about appendixes.
+% http://www.tex.ac.uk/FAQ-appendix.html
+
+
+\section{Propagation Of Uncertainties from fit parameters $p_1$, $p_2$, $p_3$ to T0}
+From equation \ref{T0estm2}, we see that T0 depends on three different parameters $p_1$, $p_2$, $p_3$. And, if these parameters have
+uncertainties $\Delta p_1$, $\Delta p_2$, and $\Delta p_3$ respectively, they will all propagate\cite{wikiErrProp} and contribute to the overall uncertainty in T0 as follows:
+\begin{equation}
+\label{apT0err}
+\begin{aligned}
+  \Delta T0    =  - \sqrt{\Big(\frac{\partial T0}{\partial p_1} \Big)^2 (\Delta p_1)^2
+    +  \Big(\frac{\partial T0}{\partial p_2} \Big)^2 (\Delta p_2)^2
+    +  \Big(\frac{\partial T0}{\partial p_3} \Big)^2 (\Delta p_3)^2}
+\end{aligned}
+\end{equation}
+
+Now, these partial derivatives of T0 w.r.t the three parameters are evaluated as follows:
+\begin{equation}
+\label{dT0BydP123}
+\begin{aligned}
+  \frac{\partial T0}{\partial p_1} & =  \frac{4}{  (2p_1 - p_3)^2}  \\
+  \frac{\partial T0}{\partial p_2} & =  -\frac{ 1}{ p_3} \\
+  \frac{\partial T0}{\partial p_3} & =  -\frac{ 2}{ (2p_1 - p_3)^2} + \frac{ p_2}{ p^2_3}
+\end{aligned}
+\end{equation}
+
+
+
+
+\begin{thebibliography}{9}
+  \bibitem{wikiErrProp} Wikipedia, https://en.wikipedia.org/wiki/Propagation\_of\_uncertainty, March, 2017.
+%%
+%%\bibitem{lamport94}
+%%  Leslie Lamport,
+%%  \emph{\LaTeX: a document preparation system},
+%%  Addison Wesley, Massachusetts,
+%%  2nd edition,
+%%  1994.
+%%
+\end{thebibliography}
 
 \end{document}
