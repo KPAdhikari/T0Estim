@@ -67,7 +67,7 @@ is described and the results are presented. %\LaTeX{}.
 \section{Introduction}
 \FloatBarrier
 
-The recorded TDC values (in nanoseconds) which provide the measurement of drift times for the ions produced by a charged particle passing through the drift chamber are actually a sum of the true drift time and several delays. One major component of this delay is the delay due to the time taken by the signals while traveling through the signal cables.
+The recorded TDC values (in nanoseconds) which provide the measurement of drift times for the ions produced by a charged particle passing through the drift chamber are actually a sum of the true drift time and several delays. One major component of this delay is the fixed delay due to the propagation time of the signals through the signal cables that connect the pins in DCRBs (Drift Chamber Readout Boards) and the corresponding pins in the on-board STBs (Signal Translation Boards). If there were no delay of any kind (fixed or event dependent), the signal would be of the shape of a trapezoid with the perfectly vertical leading edge positioned at $t = 0$, and similarly vertical trailing edge positioned at $t = t_{max}$. But, due to the fixed time delays, the whole signal is displayed by a certain amount T0 and the leading and trailing edges smeared out due to event dependent delays - mainly due to the particle flight time (along the volume of the detector) and the signal propagation along the sense wires. In this document, we describe the process of estimating the value of the T0s for all the cables which are $42\times 18$ in number.
 
 
 \section{Procedure for \t0 estimation}
