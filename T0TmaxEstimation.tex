@@ -62,6 +62,71 @@ is described and the results are presented. %\LaTeX{}.
 
 \pagebreak
 
+\section{Temporary Section for Making Equations related to T-to-D calibration}
+
+
+\begin{equation}
+\label{T2DCor1}
+\begin{aligned}
+  t_{calc}   = & \frac{x}{v_0} + a(v_0, t_{max})\cdot \Big( \frac{x}{x_{max}\cdot cos(30^{\circ} - \alpha)} \Big)^n \\
+   & + b(v_0,t_{max},\alpha)\cdot \Big( \frac{x}{x_{max}\cdot cos(30^{\circ} - \alpha)} \Big)^m \\
+   & + t_{\beta} + t_{B-field}
+       %& = - \frac{2}{2p_1  - p_3} - \frac{p_2}{p_3}
+\end{aligned}
+\end{equation}
+
+
+\begin{equation}
+\label{T2DCor2}
+\begin{aligned}
+  t_{calc}   = & \frac{x}{v_0} + a\cdot \Big( \frac{x}{x_{max}\cdot cos(30^{\circ} - \alpha)} \Big)^n \\
+   & + b(v_0,t_{max},\alpha)\cdot \Big( \frac{x}{x_{max}\cdot cos(30^{\circ} - \alpha)} \Big)^m \\
+   & + \Delta t_{\beta} + \Delta t_{Bfield}
+       %& = - \frac{2}{2p_1  - p_3} - \frac{p_2}{p_3}
+\end{aligned}
+\end{equation}
+
+\begin{equation}
+\label{T2DCor2}
+\begin{aligned}
+  t_{calc}   =  \frac{x}{v_0} + a\cdot \hat{x}^n + b\cdot \hat{x}^m  + \Delta t_{\beta} + \Delta t_{Bfield}
+       %& = - \frac{2}{2p_1  - p_3} - \frac{p_2}{p_3}
+\end{aligned}
+\end{equation}
+
+\begin{equation}
+\label{xhat}
+\begin{aligned}
+  \hat{x}   = \frac{x}{x^{\alpha}_{max}} = \frac{x}{x_{max}\cdot cos(30^{\circ} - \alpha)}
+       %& = - \frac{2}{2p_1  - p_3} - \frac{p_2}{p_3}
+\end{aligned}
+\end{equation}
+
+\begin{equation}
+\label{tBeta}
+\begin{aligned}
+  \Delta t_{\beta}  = \frac{ \sqrt{x^2 + (distbeta\cdot \beta^2)^2} - x }{v_0}
+\end{aligned}
+\end{equation}
+
+
+\begin{equation}
+\label{tBfield}
+\begin{aligned}
+  \Delta t_{Bfield}   = C_{\Delta B}\cdot B^2 \cdot t_{max} \cdot (b_1 \hat{x} + b_2 \hat{x}^2
+  + b_3 \hat{x}^3 + b_4 \hat{x}^4)
+\end{aligned}
+\end{equation}
+
+
+
+\begin{equation}
+\label{chisq}
+\begin{aligned}
+  \chi^2   = \sum_{i=1}^{N} \Big(\frac{t_{calc} - t_{xprof}}{t_{Err}} \Big)^2
+\end{aligned}
+\end{equation}
+
 
 
 \section{Introduction}
@@ -69,6 +134,11 @@ is described and the results are presented. %\LaTeX{}.
 
 The recorded TDC values (in nanoseconds) which provide the measurement of drift times for the ions produced by a charged particle passing through the drift chamber are actually a sum of the true drift time and several delays. One major component of this delay is the fixed delay due to the propagation time of the signals through the signal cables that connect the pins in DCRBs (Drift Chamber Readout Boards) and the corresponding pins in the on-board STBs (Signal Translation Boards). If there were no delay of any kind (fixed or event dependent), the signal would be of the shape of a trapezoid with the perfectly vertical leading edge positioned at $t = 0$, and similarly vertical trailing edge positioned at $t = t_{max}$. But, due to the fixed time delays, the whole signal is displayed by a certain amount T0 and the leading and trailing edges smeared out due to event dependent delays - mainly due to the particle flight time (along the volume of the detector) and the signal propagation along the sense wires. In this document, we describe the process of estimating the value of the T0s for all the cables which are $42\times 18$ in number.
 
+
+\textcolor{red}{Quick comments from Mac (organize it better later):} If we had perfect resolution, the time signal would be like a trapezoid with the leading edge of the time distribution completely vertical to the time axis, and if there were no delays, the leading edge would be at t=0 and trailing edge (also vertical in case of perfect resolution) would be at t = tmax. But, various smearing effects erode the two edges giving the shapes that we see. Among several smearing effects, some are small and symmetrical \textcolor{red}{(which ones? Ask Mac)} which keeps the overall position (position of the 1/2 way point) of the leading edge the same as before. Whereas, the beta dependent time walk component (due to the fact that ionization is different for different particle speed i.e. beta) is rather asymmetrical and big and that causes the overall position of the edge to shift away from the actual position (therefore, we should be careful about how we decide T0 after extrapolating the edge-line to the time-axis at the t=0 or t=background level. Should we take the value right at the intersection point or at about 10\% of the height or something like that?
+
+
+\textbf{About $\beta$-dependent time walk:} Particles with different $beta$ produce different degrees of ionization, causing detector signals/pulses to be of different sizes. Slow particles produce more ions than fast ones. If the detected pulse is bigger in size the leading edge will have higher slope, thus reaching the threshold for faster than when the signals are smaller in size. This leads to the walking/smearing of the initial/start time (T0).
 
 \section{Procedure for \t0 estimation}
 To dermine the $T_0$ for a given cable, a histogram is made of the TDC values recorded for all the hits corresponding to the cable. Then towards the rising edge, the histogram is fit to the following function with five free parameters $p_0$, .., $p_4$.
@@ -375,6 +445,7 @@ Now, these partial derivatives of T0 w.r.t the three parameters are evaluated as
   \frac{\partial T0}{\partial p_3} & =  -\frac{ 2}{ (2p_1 - p_3)^2} + \frac{ p_2}{ p^2_3}
 \end{aligned}
 \end{equation}
+
 
 
 
